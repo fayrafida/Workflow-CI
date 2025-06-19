@@ -8,7 +8,7 @@ import mlflow.sklearn
 import time
 
 # Atur tracking URI ke server MLflow
-mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_tracking_uri("file:./mlruns")
 
 # Load dataset hasil preprocessing
 df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn_preprocessing.csv")
