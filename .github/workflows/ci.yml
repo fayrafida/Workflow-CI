@@ -8,6 +8,9 @@ on:
       - 'Workflow-CI/MLProject/WA_Fn-UseC_-Telco-Customer-Churn_preprocessing.csv'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   run-mlflow-project:
     runs-on: ubuntu-latest
@@ -15,6 +18,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        persist-credentials: true
 
     - name: Set up Conda
       uses: conda-incubator/setup-miniconda@v2
@@ -27,3 +32,15 @@ jobs:
       run: |
         cd MLProject
         conda run -n telco-env python modelling.py
+
+    - name: Commit and push mlruns and metrics
+      env:
+        TOKEN: ${{ secrets.GH_PAT }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add MLProject/mlruns MLProject/metrics.json
+        git commit -m "Add mlruns and metrics.json from CI run" || echo "No changes to commit"
+        git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
+        git push origin HEAD:main
+
