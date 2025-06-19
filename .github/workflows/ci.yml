@@ -8,6 +8,9 @@ on:
       - 'Workflow-CI/MLProject/WA_Fn-UseC_-Telco-Customer-Churn_preprocessing.csv'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   run-mlflow-project:
     runs-on: ubuntu-latest
@@ -16,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        persist-credentials: true  # diperlukan agar bisa push
+        persist-credentials: true
 
     - name: Set up Conda
       uses: conda-incubator/setup-miniconda@v2
