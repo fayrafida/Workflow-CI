@@ -1,41 +1,41 @@
-name: Run MLflow Project (CI)
+name: CI
 
 on:
   push:
-    branches:
-      - main
     paths:
-      - 'Workflow-CI/MLProject/WA_Fn-UseC_-Telco-Customer-Churn_preprocessing.csv'
+      - 'modelling.py'
+      - 'data/WA_Fn-UseC_-Telco-Customer-Churn_preprocessing.csv'
+  pull_request:
+    paths:
+      - 'modelling.py'
+      - 'data/WA_Fn-UseC_-Telco-Customer-Churn_preprocessing.csv'
   workflow_dispatch:
 
 jobs:
-  run-mlflow-project:
+  modelling-job:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Conda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-activate-base: false
-        environment-file: MLProject/conda.yaml
-        activate-environment: telco-env
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
 
-    - name: Run MLflow Project
-      run: |
-        cd MLProject
-        conda run -n telco-env python modelling.py
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Upload MLflow artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: mlruns
-        path: MLProject/mlruns/
+      - name: Run ML pipeline
+        run: python modelling.py
 
-    - name: Upload metrics file
-      uses: actions/upload-artifact@v4
-      with:
-        name: metrics
-        path: MLProject/metrics.json
+      - name: Upload MLflow artifacts and metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-outputs
+          path: |
+            mlruns/
+            metrics.json
