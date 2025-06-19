@@ -27,3 +27,15 @@ jobs:
       run: |
         cd MLProject
         conda run -n telco-env python modelling.py
+
+    - name: Upload MLflow artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: mlruns
+        path: MLProject/mlruns/
+
+    - name: Upload metrics file
+      uses: actions/upload-artifact@v3
+      with:
+        name: metrics
+        path: MLProject/metrics.json
