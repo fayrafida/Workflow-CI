@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        persist-credentials: true  # diperlukan agar bisa push
 
     - name: Set up Conda
       uses: conda-incubator/setup-miniconda@v2
@@ -28,14 +30,10 @@ jobs:
         cd MLProject
         conda run -n telco-env python modelling.py
 
-    - name: Upload mlruns artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: mlruns
-        path: MLProject/mlruns
-
-    - name: Upload metrics artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: metrics
-        path: MLProject/metrics.json
+    - name: Commit and push mlruns and metrics
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add MLProject/mlruns MLProject/metrics.json
+        git commit -m "Add mlruns and metrics.json from CI run" || echo "No changes to commit"
+        git push
