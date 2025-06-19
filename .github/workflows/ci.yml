@@ -26,10 +26,4 @@ jobs:
     - name: Run MLflow Project
       run: |
         cd MLProject
-        conda run -n telco-env python modelling_tuning.py
-
-    - name: Upload model artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: churn-model
-        path: MLProject/mlruns
+        conda run -n telco-env python modelling.py
