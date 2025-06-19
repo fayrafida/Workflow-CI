@@ -29,7 +29,7 @@ jobs:
         conda run -n telco-env python modelling_tuning.py
 
     - name: Upload model artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: churn-model
         path: MLProject/mlruns
